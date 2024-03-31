@@ -8,28 +8,35 @@ import {
 import { Controller, ControllerProps } from 'react-hook-form';
 
 interface FormInputProps {
+  name: string;
   control: ControllerProps['control'];
   errors: any;
+  defaultValue: number;
 }
 
-export const FormInput = ({ control, errors }: FormInputProps) => {
+export const FormInput = ({
+  defaultValue,
+  name,
+  control,
+  errors
+}: FormInputProps) => {
   return (
     <Controller
-      name="amount"
+      name={name}
       control={control}
-      defaultValue={0}
-      render={({ field }) => (
+      defaultValue={defaultValue}
+      render={({ field, fieldState: { error } }) => (
         <FormControl>
           <FormLabel>Amount</FormLabel>
           <TextField
             variant="outlined"
             {...field}
             type="input"
-            error={!!errors.amount}
+            error={!!errors?.amount}
             placeholder="Placeholder"
           />
           <FormHelperText>
-            {errors.amount ? errors.amount?.message : ''}
+            {errors?.amount ? errors?.amount?.message : ''}
           </FormHelperText>
         </FormControl>
       )}
