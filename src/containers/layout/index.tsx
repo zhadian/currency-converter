@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import { Box, Container } from '@mui/material';
+import { Box, Container, CssBaseline } from '@mui/material';
 import { Convertor } from '../../features';
 import { themes } from '../../themes';
 

@@ -23,5 +23,14 @@ export const themes = {
     sx: {
       margin: '1rem auto !important'
     }
+  },
+  resultContainerTheme: {
+    sx: {
+      height: '50px',
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
   }
 };

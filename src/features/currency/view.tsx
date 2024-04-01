@@ -1,7 +1,7 @@
-import React from 'react';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import React, { useMemo } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Stack from '@mui/joy/Stack';
 import { apiSlice, useFetchCurrencyQuery } from './currency-slice';
@@ -9,12 +9,7 @@ import { schema } from './schema';
 import { themes } from '../../themes';
 import { FormInput, FormSelect } from '../../components';
 import { FIELDS_LABELS, FIELDS_NAME } from '../../constants';
-
-interface IFormInputs extends FieldValues {
-  from: string;
-  to: string;
-  amount: number;
-}
+import { IFormInputs } from '../../types';
 
 export const Convertor = () => {
   const { data = [], isLoading } = useFetchCurrencyQuery();
@@ -23,11 +18,13 @@ export const Convertor = () => {
     { data: result, isLoading: isConvertLoading, isFetching }
   ] = apiSlice.endpoints?.convertCurrency.useLazyQuery();
 
+  const { resultContainerTheme, typographyTheme } = themes ?? {};
+
   const {
     getValues,
     control,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isValid, isDirty }
   } = useForm<IFormInputs>({
     resolver: yupResolver(schema)
   });
@@ -35,18 +32,15 @@ export const Convertor = () => {
     data: IFormInputs
   ) => {
     const { amount, ...rest } = data;
-    convertCurrency({
-      ...rest
-    });
+    convertCurrency(rest);
   };
 
-  const roundedFinalResult =
-    Number(result?.toFixed(4)) * Number(getValues(FIELDS_NAME.AMOUNT));
-
-  const currencyResult =
-    roundedFinalResult &&
-    ` ${getValues(FIELDS_NAME.AMOUNT)} ${getValues(FIELDS_NAME.FROM)} =
-              ${roundedFinalResult} ${getValues(FIELDS_NAME.TO)}`;
+  const roundedFinalResult = useMemo(() => {
+    if (result) {
+      return `${getValues(FIELDS_NAME.AMOUNT)} ${getValues(FIELDS_NAME.FROM)} =
+              ${(Number(result) * Number(getValues(FIELDS_NAME.AMOUNT))).toFixed(4)} ${getValues(FIELDS_NAME.TO)}`;
+    }
+  }, [result, getValues(FIELDS_NAME.AMOUNT)]);
 
   if (isLoading) return <CircularProgress />;
 
@@ -58,7 +52,6 @@ export const Convertor = () => {
             defaultValue={0}
             name={FIELDS_NAME.AMOUNT}
             label={FIELDS_LABELS.AMOUNT}
-            //@ts-ignore
             control={control}
             errors={errors}
           />
@@ -67,7 +60,6 @@ export const Convertor = () => {
             label={FIELDS_LABELS.FROM}
             data={data}
             defaultValue={data[0]}
-            //@ts-ignore
             control={control}
             errors={errors}
           />
@@ -86,16 +78,22 @@ export const Convertor = () => {
               Submit
             </LoadingButton>
           ) : (
-            <Button variant={'contained'} type="submit">
+            <Button
+              disabled={!isDirty || !isValid}
+              variant={'contained'}
+              type="submit"
+            >
               Convert
             </Button>
           )}
 
-          {result && !isFetching && (
-            <Typography {...themes?.typographyTheme} variant={'h6'}>
-              {currencyResult}
-            </Typography>
-          )}
+          <Box {...resultContainerTheme}>
+            {result && !isFetching && (
+              <Typography {...typographyTheme} variant={'h6'}>
+                {roundedFinalResult}
+              </Typography>
+            )}
+          </Box>
         </Stack>
       </form>
     </>

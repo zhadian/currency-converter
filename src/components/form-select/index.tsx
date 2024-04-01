@@ -6,14 +6,15 @@ import {
   MenuItem,
   Select
 } from '@mui/material';
-import { Controller, ControllerProps } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { IFormInputs } from '../../types';
 
 interface FormSelectProps {
   name: string;
   label: string;
   defaultValue: string;
-  control: ControllerProps['control'];
+  control: Control<IFormInputs>;
   errors: any;
   data: string[];
 }

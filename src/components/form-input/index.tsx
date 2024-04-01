@@ -5,13 +5,14 @@ import {
   FormLabel,
   TextField
 } from '@mui/material';
-import { Controller, ControllerProps } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { inputValidation } from '../../utils';
+import { IFormInputs } from '../../types';
 
 interface FormInputProps {
   name: string;
   label: string;
-  control: ControllerProps['control'];
+  control: Control<IFormInputs>;
   errors: any;
   defaultValue: number;
 }
