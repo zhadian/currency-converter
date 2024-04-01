@@ -17,9 +17,11 @@ interface IFormInputs extends FieldValues {
 }
 
 export const Convertor = () => {
-  const { data = [], isLoading, error, isFetching } = useFetchCurrencyQuery();
-  const [convertCurrency, { data: result, isLoading: isConvertLoading }] =
-    apiSlice.endpoints?.convertCurrency.useLazyQuery();
+  const { data = [], isLoading } = useFetchCurrencyQuery();
+  const [
+    convertCurrency,
+    { data: result, isLoading: isConvertLoading, isFetching }
+  ] = apiSlice.endpoints?.convertCurrency.useLazyQuery();
 
   const {
     getValues,
@@ -79,7 +81,7 @@ export const Convertor = () => {
             errors={errors}
           />
           <br />
-          {isConvertLoading ? (
+          {isConvertLoading || isFetching ? (
             <LoadingButton loading variant="contained">
               Submit
             </LoadingButton>
@@ -89,7 +91,7 @@ export const Convertor = () => {
             </Button>
           )}
 
-          {result && (
+          {result && !isFetching && (
             <Typography {...themes?.typographyTheme} variant={'h6'}>
               {currencyResult}
             </Typography>
