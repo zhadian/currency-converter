@@ -1,0 +1,1 @@
+export { inputValidation } from './inputValidation';

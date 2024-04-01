@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { KeyboardEvent } from 'react';
 import {
   FormControl,
   FormHelperText,
@@ -6,9 +6,11 @@ import {
   TextField
 } from '@mui/material';
 import { Controller, ControllerProps } from 'react-hook-form';
+import { inputValidation } from '../../utils';
 
 interface FormInputProps {
   name: string;
+  label: string;
   control: ControllerProps['control'];
   errors: any;
   defaultValue: number;
@@ -16,6 +18,7 @@ interface FormInputProps {
 
 export const FormInput = ({
   defaultValue,
+  label,
   name,
   control,
   errors
@@ -25,18 +28,22 @@ export const FormInput = ({
       name={name}
       control={control}
       defaultValue={defaultValue}
-      render={({ field, fieldState: { error } }) => (
+      render={({ field }) => (
         <FormControl>
-          <FormLabel>Amount</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <TextField
+            autoFocus={true}
             variant="outlined"
             {...field}
             type="input"
-            error={!!errors?.amount}
-            placeholder="Placeholder"
+            error={!!errors.amount}
+            placeholder="Please enter a number"
+            onKeyDown={(e: KeyboardEvent<HTMLInputElement>) =>
+              inputValidation(e)
+            }
           />
           <FormHelperText>
-            {errors?.amount ? errors?.amount?.message : ''}
+            {errors.amount ? errors.amount?.message : ''}
           </FormHelperText>
         </FormControl>
       )}

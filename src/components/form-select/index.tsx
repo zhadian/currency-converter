@@ -10,20 +10,30 @@ import { Controller, ControllerProps } from 'react-hook-form';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface FormSelectProps {
+  name: string;
+  label: string;
+  defaultValue: string;
   control: ControllerProps['control'];
   errors: any;
-  data: any;
+  data: string[];
 }
 
-export const FormSelect = ({ control, errors, data }: FormSelectProps) => {
+export const FormSelect = ({
+  name,
+  label,
+  defaultValue,
+  control,
+  errors,
+  data
+}: FormSelectProps) => {
   return (
     <Controller
-      name="from"
+      name={name}
       control={control}
-      defaultValue={data[0]}
+      defaultValue={defaultValue}
       render={({ field }) => (
         <FormControl>
-          <FormLabel>From</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <Select
             variant="outlined"
             {...field}
