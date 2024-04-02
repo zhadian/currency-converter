@@ -12,10 +12,19 @@ import { FIELDS_LABELS, FIELDS_NAME } from '../../constants';
 import { IFormInputs } from '../../types';
 
 export const Convertor = () => {
-  const { data = [], isLoading } = useFetchCurrencyQuery();
+  const {
+    data = [],
+    isLoading,
+    isError: isFetchCurrencyError
+  } = useFetchCurrencyQuery();
   const [
     convertCurrency,
-    { data: result, isLoading: isConvertLoading, isFetching }
+    {
+      data: result,
+      isLoading: isConvertLoading,
+      isFetching,
+      isError: isConvertingError
+    }
   ] = apiSlice.endpoints?.convertCurrency.useLazyQuery();
 
   const { resultContainerTheme, typographyTheme } = themes ?? {};
@@ -43,6 +52,8 @@ export const Convertor = () => {
   }, [result, getValues(FIELDS_NAME.AMOUNT)]);
 
   if (isLoading) return <CircularProgress />;
+  if (isFetchCurrencyError)
+    return <Typography variant="h5">Oops, Something went wrong!</Typography>;
 
   return (
     <>
@@ -90,7 +101,9 @@ export const Convertor = () => {
           <Box {...resultContainerTheme}>
             {result && !isFetching && (
               <Typography {...typographyTheme} variant={'h6'}>
-                {roundedFinalResult}
+                {isConvertingError
+                  ? 'Oops, Something went wrong!'
+                  : roundedFinalResult}
               </Typography>
             )}
           </Box>
